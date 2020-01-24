@@ -38,8 +38,7 @@
     "PYTHON_PIP_VERSION": "19.3.1",
     "PYTHON_VERSION": "3.7.0",
     "FLYWHEEL_SDK_SKIP_VERSION_CHECK": "true",
-    "PIP_PROCESS_DEPENDENCY_LINKS": "1",
-    "PYTHONPATH": "/flywheel/v0"
+    "PIP_PROCESS_DEPENDENCY_LINKS": "1"
   },
   "command": "pipenv run ./run.py"
 }

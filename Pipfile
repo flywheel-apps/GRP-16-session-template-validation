@@ -11,6 +11,7 @@ pylint = "*"
 [packages]
 flywheel-sdk = "*"
 pandas = "*"
+ruamel-yaml = "*"
 
 [requires]
 python_version = "3.7"

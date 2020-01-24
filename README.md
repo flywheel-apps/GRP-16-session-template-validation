@@ -1,27 +1,32 @@
 # flywheel/grp16-session-template-validation
 
 GRP-16 is a Flywheel analysis gear to validate sessions in project according to
-templates defined at the project level and report on the errors found.
+session templates defined at the project level and report on the errors found.
 
 ## Inputs
 
-This gear does not have any input
+This gear does not have any input.
 
 ## Configuration
 
 ### debug (bool, optional) Default= False
 
-If set to True, run the validation only on the first 20 sessions of the project
+If set to True, run the validation only on the first 20 sessions of the project.
 
 ## Outputs
 
 ### validation-report.csv
 
-This `csv` file will report the errors found for session(s) that did
+This `csv` file contains the errors found for the session(s) that did
 not pass the template validation.
 
 For each such session, a row will populated with `session.id`, `session.label`, 
-`subject.code` and errors from each `template` evaluated.
+`subject.code` and errors for each `template` evaluated.
+
+### template-list.yml 
+
+This `yml` file contains the schema of the session templates defined for
+the project at the time the gear was run.
 
 ## Troubleshooting
 As with any gear, the Gear Logs are the first place to check when something appears 
