@@ -102,6 +102,9 @@ def check_session_for_single_template(session, template):
             if not m:
                 return False, f'Failed to find a session with label matching {label}'
 
+            if not check_cont(session, s_requirements):
+                return False, f'Failed to find a session with requirement {s_requirements}'
+
     if a_requirements:
         if not session.get('_id'):
             # New session, won't have any acquisitions. Compliance check fails
@@ -133,7 +136,7 @@ def is_session_compliant(session, templates):
 
     errors = []
     for template in templates:
-        is_valid, error = check_session_for_single_template(session, template)
+        is_valid, error = check_session_for_single_template(session, copy.deepcopy(template))
         if is_valid:
             return True, None
         else:

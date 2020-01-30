@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 import flywheel
 import logging
+import copy
 from src.utils import get_analysis_parent, is_session_compliant
 from ruamel import yaml
 
@@ -30,7 +31,7 @@ def report_template_validation_on_project(project, analysis, debug=False):
 
     for i, session in enumerate(sessions):
         log.info(f'Processing session {session.id}...')
-        is_valid, errors = is_session_compliant(session, project.templates.copy())
+        is_valid, errors = is_session_compliant(session, project.templates)
         if not is_valid:
             log.info('Session %s failed. Logging failure', session.id)
             row = {'session.id': session.get('_id'),
@@ -47,7 +48,6 @@ def report_template_validation_on_project(project, analysis, debug=False):
         analysis_label = f'grp16-session-template-validation_ERROR_SESSION_COUNT_{len(df)}'
         log.info(f'Updating analysis={analysis.id} with label={analysis_label}')
         analysis.update({'label': analysis_label})
-
 
     return 0
 
