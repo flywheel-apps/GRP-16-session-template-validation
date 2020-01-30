@@ -13,12 +13,7 @@ log = logging.getLogger(__name__)
 FW_ROOT = Path(os.environ.get('FLYWHEEL', '/flywheel/v0'))
 
 
-def report_template_validation_on_project(project, analysis, debug=False):
-
-    if debug:
-        sessions = project.sessions()[:50]
-    else:
-        sessions = project.sessions()
+def report_template_validation_on_project(project, analysis, stop_after_n_sessions=-1):
 
     df = pd.DataFrame(columns=['session.id', 'subject.code', 'session.label'] + [f'template{i}' for i, _ in
                                                                                  enumerate(project.templates)])
@@ -32,7 +27,11 @@ def report_template_validation_on_project(project, analysis, debug=False):
         log.info('Project does not have any templates defined. Nothing to report on.')
         return 0
 
-    for i, session in enumerate(sessions):
+    for i, session in enumerate(project.sessions.iter()):
+
+        if 0 < stop_after_n_sessions <= i:
+            break
+
         log.info(f'Processing session {session.id}...')
         is_valid, errors = is_session_compliant(session, project.templates)
         if not is_valid:
@@ -59,7 +58,8 @@ def main(gear_context):
     destination_id = gear_context.destination.get('id')
     destination = gear_context.client.get_analysis(destination_id)
     origin = get_analysis_parent(gear_context.client, destination_id)
-    return report_template_validation_on_project(origin, destination, debug=gear_context.config.get('debug', False))
+    return report_template_validation_on_project(
+        origin, destination, stop_after_n_sessions=gear_context.config.get('stop_after_n_sessions', False))
 
 
 if __name__ == '__main__':

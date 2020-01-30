@@ -7,11 +7,11 @@
   "license": "Other",
   "source": "https://github.com/flywheel-apps/GRP-16-session-template-validation",
   "url": "https://github.com/flywheel-apps/GRP-16-session-template-validation/blob/master/README.md",
-  "version": "0.0.1-rc1",
+  "version": "0.0.1b",
   "custom": {
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/grp-16-session-template-validation:0.0.1-rc1"
+      "image": "flywheel/grp-16-session-template-validation:0.0.1b"
     },
     "flywheel": {
       "suite": "Curation"
@@ -23,10 +23,10 @@
     }
   },
   "config": {
-    "debug": {
-      "default": false,
-      "description": "If true, run in debug mode",
-      "type": "boolean"
+    "stop_after_n_sessions": {
+      "default": -1,
+      "description": "Number of session to process before stopping. If < 0, process all sessions. (Default=-1)",
+      "type": "number"
     }
   },
   "environment": {
