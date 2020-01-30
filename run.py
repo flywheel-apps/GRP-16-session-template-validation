@@ -28,6 +28,9 @@ def report_template_validation_on_project(project, analysis, debug=False):
     if project.templates:
         with open(output_dir/'template-list.yml', 'w') as fid:
             yaml.dump({f'templates{i}': template for i, template in enumerate(project.templates)}, fid)
+    else:
+        log.info('Project does not have any templates defined. Nothing to report on.')
+        return 0
 
     for i, session in enumerate(sessions):
         log.info(f'Processing session {session.id}...')
