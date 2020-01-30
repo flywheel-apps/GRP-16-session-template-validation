@@ -13,10 +13,16 @@ def get_analysis_parent(fw_client, container_id):
 
     Returns:
         (flywheel.Project): The container object or None if an exception is raised retrieving the container
+
+    Raises:
+        TypeError: If analysis parent is not of type 'project'
+        Exception: If others exceptions occurred
     """
     try:
         container = fw_client.get(container_id)
         container_parent = fw_client.get(container.parent.id)
+        if container_parent.container_type != 'project':
+            raise TypeError('Analysis parent container must be of type project')
         log.info(f'Destination analysis {container.id} parent is a {container_parent.container_type} with '
                  f'id {container_parent.id}')
         return container_parent
