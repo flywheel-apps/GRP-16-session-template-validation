@@ -47,13 +47,14 @@ def main(gear_context):
             analysis.update({'label': analysis_label})
 
         if error_count == 0:
-            return 0
-        else:
-            return 1
+            log.info(f'Gear found {error_count} non compliant sessions')
+
+        return 0
 
 
 if __name__ == '__main__':
     with flywheel.GearContext() as gear_context:
+        gear_context.init_logging()
         exit_status = main(gear_context)
     log.info('exit_status is %s', exit_status)
     os.sys.exit(exit_status)
