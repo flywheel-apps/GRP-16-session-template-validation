@@ -22,7 +22,7 @@ def parse_args_from_context(gear_context):
 
     template_validation_args = {
         'fw_client': gear_context.client,
-        'origin_id': origin.id,
+        'project_id': origin.id,
         'stop_after_n_sessions': gear_context.config.get('stop_after_n_sessions', False),
         'output_dir': OUTPUT_DIR,
     }

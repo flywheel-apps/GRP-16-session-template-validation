@@ -98,6 +98,8 @@ def report_validation_on_project(fw_client, project_id, stop_after_n_sessions=-1
         log.info(f'Processing session {session.id}...')
         error_count += validate_session(session, project.templates, csv_output_path=csv_output_path)
 
+    return error_count
+
 
 if __name__ == '__main__':
 
