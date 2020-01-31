@@ -1,17 +1,17 @@
 {
   "name": "grp16-session-template-validation",
-  "label": "GRP-16: Session template validation",
-  "description": "Report on session template validation",
+  "label": "GRP-16: Session Template Validation",
+  "description": "Generate a report on sessions that fail to validate project templates",
   "author": "Flywheel SSE",
   "maintainer": "Flywheel <support@flywheel.io>",
   "license": "Other",
   "source": "https://github.com/flywheel-apps/GRP-16-session-template-validation",
   "url": "https://github.com/flywheel-apps/GRP-16-session-template-validation/blob/master/README.md",
-  "version": "0.0.1f",
+  "version": "0.0.1-rc2",
   "custom": {
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/grp-16-session-template-validation:0.0.1f"
+      "image": "flywheel/grp-16-session-template-validation:0.0.1-rc2"
     },
     "flywheel": {
       "suite": "Curation"

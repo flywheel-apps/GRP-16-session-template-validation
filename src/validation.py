@@ -1,12 +1,15 @@
 #!/usr/bin/env python
+"""Validation module"""
 import os
 import copy
 import logging
 import argparse
 from pathlib import Path
+
 import pandas as pd
 from ruamel import yaml
 import flywheel
+
 from src.utils import check_session_for_single_template
 
 
@@ -32,12 +35,11 @@ def is_session_compliant(session, templates):
         is_valid, error = check_session_for_single_template(session, copy.deepcopy(template))
         if is_valid:
             return True, None
-        else:
-            errors.append(error)
+        errors.append(error)
     return False, errors
 
 
-def validate_session(session, templates, csv_output_path=None):
+def validate_session(session, templates, csv_path=None):
     """Validate session given template
 
     If errors are founds for session template, errors get logged to a csv file at path csv_output_path
@@ -45,14 +47,14 @@ def validate_session(session, templates, csv_output_path=None):
     Args:
         session (flywheel.Session): A flywheel session object
         templates (list): A list of flywheel session template
-        csv_output_path (Path-like): Path to output csv file storing errors
+        csv_path (Path-like): Path to output csv file storing errors
 
     Returns:
         int: 1 if errors was found during session validation, 0 otherwise
     """
     is_valid, errors = is_session_compliant(session, templates)
     if not is_valid:
-        log.info('Session %s failed. Logging failure', session.id)
+        log.info('Session %s failed validation', session.id)
         row = {'session.id': session.get('_id'),
                'session.label': session.get('label'),
                'subject.code': session.subject.code}
@@ -60,10 +62,10 @@ def validate_session(session, templates, csv_output_path=None):
         session_df = pd.DataFrame([row])
 
         if isinstance(session_df, pd.DataFrame):
-            if csv_output_path and not os.path.isfile(csv_output_path) and (len(session_df) >= 1):
-                session_df.to_csv(csv_output_path, index=False)
-            elif csv_output_path and os.path.isfile(csv_output_path) and (len(session_df) >= 1):
-                session_df.to_csv(csv_output_path, mode='a', header=False, index=False)
+            if csv_path and not os.path.isfile(csv_path) and (len(session_df) >= 1):
+                session_df.to_csv(csv_path, index=False)
+            elif csv_path and os.path.isfile(csv_path) and (len(session_df) >= 1):
+                session_df.to_csv(csv_path, mode='a', header=False, index=False)
         return 1
     return 0
 
@@ -79,24 +81,24 @@ def report_validation_on_project(fw_client, project_id, stop_after_n_sessions=-1
         output_dir (Path-like): Path to directory where outputs are saved
     """
 
-    project = fw_client.get(project_id)
+    proj = fw_client.get(project_id)
     output_dir = Path(output_dir)
-    csv_output_path = output_dir / CSV_BASENAME
+    csv_path = output_dir / CSV_BASENAME
 
     # save template at runtime
-    if project.templates:
+    if proj.templates:
         with open(output_dir / TEMPLATE_BASENAME, 'w') as fid:
-            yaml.dump({f'templates{i}': template for i, template in enumerate(project.templates)}, fid)
+            yaml.dump({f'templates{i}': template for i, template in enumerate(proj.templates)}, fid)
     else:
         log.info('Project does not have any templates defined. Nothing to report on.')
         return 0
 
     error_count = 0
-    for i, session in enumerate(project.sessions.iter()):
+    for i, session in enumerate(proj.sessions.iter()):
         if 0 < stop_after_n_sessions <= i:
             break
-        log.info(f'Processing session {session.id}...')
-        error_count += validate_session(session, project.templates, csv_output_path=csv_output_path)
+        log.info('Processing session %s...', session.id)
+        error_count += validate_session(session, proj.templates, csv_path=csv_path)
 
     return error_count
 

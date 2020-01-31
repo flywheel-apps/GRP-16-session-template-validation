@@ -1,3 +1,4 @@
+"""Utility functions"""
 import re
 import copy
 import logging
@@ -6,7 +7,7 @@ log = logging.getLogger(__name__)
 
 
 def get_analysis_parent(fw_client, container_id):
-    """Return parent container id of the analysis container provided
+    """Returns parent container id of the analysis container provided
     Args:
         fw_client (flywheel.Client): An instance of the Flywheel client
         container_id (str): A flywheel analysis container id
@@ -23,17 +24,16 @@ def get_analysis_parent(fw_client, container_id):
         container_parent = fw_client.get(container.parent.id)
         if container_parent.container_type != 'project':
             raise TypeError('Analysis parent container must be of type project')
-        log.info(f'Destination analysis {container.id} parent is a {container_parent.container_type} with '
-                 f'id {container_parent.id}')
+        log.info('Destination analysis %s  parent is a %s with id %s',
+                 container.id, container_parent.container_type, container_parent.id)
         return container_parent
-    except Exception as e:
-        log.error(e, exc_info=True)
+    except Exception as exc:
+        log.error(exc, exc_info=True)
         return None
 
 
 def check_req(cont, req_k, req_v):
-    """Return (True, None) if container satisfies specific requirement or (False, error_msg) otherwise
-    """
+    """Return (True, None) if container satisfies specific requirement or (False, error_msg) otherwise"""
 
     # If looking at classification, translate to list rather than dictionary
     if req_k == 'classification':
@@ -67,7 +67,15 @@ def check_req(cont, req_k, req_v):
 
 
 def check_cont(cont, reqs):
-    """Return (True, None) if container satisfies specific requirement or (False, error_msg) otherwise
+    """Validate container against requirement
+
+    Args:
+        cont (flywheel.Container): A flywheel Container
+        reqs (dict): A template requirement
+
+    Returns:
+        bool: True if valid, False otherwise
+        str: Error found
     """
     for req_k, req_v in reqs.items():
         if req_k == 'files':
@@ -76,14 +84,14 @@ def check_cont(cont, reqs):
                 min_count = fr_temp.pop('minimum')
                 count = 0
                 for f in cont.get('files', []):
-                    is_satisfied, cont_error = check_cont(f, fr_temp)
+                    is_satisfied, _ = check_cont(f, fr_temp)
                     if 'deleted' in f or not is_satisfied:
                         # Didn't find a match, on to the next one
                         continue
-                    else:
-                        count += 1
-                        if count >= min_count:
-                            break
+
+                    count += 1
+                    if count >= min_count:
+                        break
 
                 if count < min_count:
                     return False, f'Failed to find {min_count} file(s) with requirement {fr_temp} ({count} found)'
@@ -96,7 +104,17 @@ def check_cont(cont, reqs):
 
 
 def check_session_for_single_template(session, template):
-    # TODO: Add docstring
+    """Validate session against template
+
+    Args:
+        session (flywheel.Session): A flywheel session
+        template (dict): A Flywheel session template
+
+    Returns:
+        bool: True if valid, False otherwise
+        str: Error found
+    """
+
     error = None
     s_requirements = template.get('session')
     a_requirements = template.get('acquisitions')
@@ -104,12 +122,12 @@ def check_session_for_single_template(session, template):
     if s_requirements:
         label = s_requirements.pop('label', None)
         if label:
-            m = re.match(label, session.get('label', ''))
-            if not m:
-                return False, f'Failed to find a session with label matching {label}'
+            match = re.match(label, session.get('label', ''))
+            if not match:
+                return False, f'Session label "{session.get("label")}" does not match {label}'
 
             if not check_cont(session, s_requirements):
-                return False, f'Failed to find a session with requirement {s_requirements}'
+                return False, f'Session label "{session.get("label")}" does not match requirement {s_requirements}'
 
     if a_requirements:
         if not session.get('_id'):
@@ -120,15 +138,14 @@ def check_session_for_single_template(session, template):
             req_temp = copy.deepcopy(req)
             min_count = req_temp.pop('minimum')
             count = 0
-            for a in acquisitions:
-                is_valid, errors = check_cont(a, req_temp)
+            for acq in acquisitions:
+                is_valid, _ = check_cont(acq, req_temp)
                 if not is_valid:
                     # Didn't find a match, on to the next one
                     continue
-                else:
-                    count += 1
-                    if count >= min_count:
-                        break
+                count += 1
+                if count >= min_count:
+                    break
             if count < min_count:
                 return False, f'Failed to find {min_count} acquisition(s) with requirement {req} ({count} found)'
     return True, error
