@@ -9,9 +9,9 @@ This gear does not have any input.
 
 ## Configuration
 
-### debug (bool, optional) Default= False
+### stop_after_n_sessions (int, optional) Default=-1
 
-If set to True, run the validation only on the first 20 sessions of the project.
+Number of sessions to process before stopping. If < 0, process all sessions. (Default=-1)
 
 ## Outputs
 
