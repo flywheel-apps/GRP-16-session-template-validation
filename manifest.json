@@ -7,11 +7,11 @@
   "license": "Other",
   "source": "https://github.com/flywheel-apps/GRP-16-session-template-validation",
   "url": "https://github.com/flywheel-apps/GRP-16-session-template-validation/blob/master/README.md",
-  "version": "0.0.1-rc2",
+  "version": "0.1.0",
   "custom": {
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/grp-16-session-template-validation:0.0.1-rc2"
+      "image": "flywheel/grp-16-session-template-validation:0.1.0"
     },
     "flywheel": {
       "suite": "Curation"
