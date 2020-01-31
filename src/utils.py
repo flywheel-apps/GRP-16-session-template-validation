@@ -96,7 +96,7 @@ def check_cont(cont, reqs):
 
 
 def check_session_for_single_template(session, template):
-
+    # TODO: Add docstring
     error = None
     s_requirements = template.get('session')
     a_requirements = template.get('acquisitions')
@@ -132,19 +132,3 @@ def check_session_for_single_template(session, template):
             if count < min_count:
                 return False, f'Failed to find {min_count} acquisition(s) with requirement {req} ({count} found)'
     return True, error
-
-
-def is_session_compliant(session, templates):
-    """
-    Given a project-level session template and a session,
-    returns True/False if the session is in compliance with the template
-    """
-
-    errors = []
-    for template in templates:
-        is_valid, error = check_session_for_single_template(session, copy.deepcopy(template))
-        if is_valid:
-            return True, None
-        else:
-            errors.append(error)
-    return False, errors
