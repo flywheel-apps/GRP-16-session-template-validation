@@ -1,0 +1,44 @@
+{
+  "name": "grp16-session-template-validation",
+  "label": "GRP-16: Session Template Validation",
+  "description": "Generate a report on sessions that fail to validate project templates",
+  "author": "Flywheel SSE",
+  "maintainer": "Flywheel <support@flywheel.io>",
+  "license": "Other",
+  "source": "https://github.com/flywheel-apps/GRP-16-session-template-validation",
+  "url": "https://github.com/flywheel-apps/GRP-16-session-template-validation/blob/master/README.md",
+  "version": "0.0.1-rc2",
+  "custom": {
+    "gear-builder": {
+      "category": "analysis",
+      "image": "flywheel/grp-16-session-template-validation:0.0.1-rc2"
+    },
+    "flywheel": {
+      "suite": "Curation"
+    }
+  },
+  "inputs": {
+    "api-key": {
+      "base": "api-key"
+    }
+  },
+  "config": {
+    "stop_after_n_sessions": {
+      "default": -1,
+      "description": "Number of session to process before stopping. If < 0, process all sessions. (Default=-1)",
+      "type": "number"
+    }
+  },
+  "environment": {
+    "GPG_KEY": "E3FF2839C048B25C084DEBE9B26995E310250568",
+    "LANG": "C.UTF-8",
+    "PATH": "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "PYTHON_GET_PIP_SHA256": "b86f36cc4345ae87bfd4f10ef6b2dbfa7a872fbff70608a1e43944d283fd0eee",
+    "PYTHON_GET_PIP_URL": "https://github.com/pypa/get-pip/raw/ffe826207a010164265d9cc807978e3604d18ca0/get-pip.py",
+    "PYTHON_PIP_VERSION": "19.3.1",
+    "PYTHON_VERSION": "3.7.0",
+    "FLYWHEEL_SDK_SKIP_VERSION_CHECK": "true",
+    "PIP_PROCESS_DEPENDENCY_LINKS": "1"
+  },
+  "command": "pipenv run ./run.py"
+}
