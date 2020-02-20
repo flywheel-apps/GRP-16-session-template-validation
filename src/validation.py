@@ -57,7 +57,7 @@ def validate_session(session, templates, csv_path=None):
         log.info('Session %s failed validation', session.id)
         row = {'session.id': session.get('_id'),
                'session.label': session.get('label'),
-               'subject.code': session.subject.code}
+               'subject.label': session.subject.label}
         row.update({f'template{i}': err for i, err in enumerate(errors)})
         session_df = pd.DataFrame([row])
 
